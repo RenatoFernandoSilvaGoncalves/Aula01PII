@@ -1,10 +1,14 @@
 import Pagina from "../templates/Pagina";
+import FormularioCadProduto from "./Formularios/FormCadProduto";
+import { Container } from "react-bootstrap";
 
 export default function TelaCadastroProduto(props) {
     return (
         <Pagina>
-            <h1>Tela de Cadastro de Produtos</h1>
-            <h2>Formulário</h2>
+             <Container mt-3>
+                <h2 className="text-center">Tela de Cadastro de Produtos</h2>
+                <FormularioCadProduto /> 
+            </Container>
         </Pagina>
     );
 }
