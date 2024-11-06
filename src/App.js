@@ -3,20 +3,16 @@ import TelaCadastroProduto from "./Telas/TelaCadastroProduto";
 import TelaMenu from "./Telas/TelaMenu";
 import Tela404 from "./Telas/Tela404";
 import TelaLogin from "./Telas/TelaLogin";
-
+import { useState } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { createContext, useState } from "react";
-
-//criando um contexto para armazenar os dados do usuário logado
-//permitindo que outros componentes possam ter acesso a essa informação
-//que é gerenciada pelo componente App
+import { createContext } from "react";
 
 export const ContextoUsuario = createContext();
 
 function App() {
   const [usuario, setUsuario] = useState({
-    email: "",
-    logado: false,
+    "email": "teste@teste",
+    "logado": false
   });
 
   if (usuario.logado) {
@@ -34,7 +30,7 @@ function App() {
         </ContextoUsuario.Provider>
       </div>
     );
-  } // fim do if usuario.logado
+  }
   else {
     return (
       <div className="App">
