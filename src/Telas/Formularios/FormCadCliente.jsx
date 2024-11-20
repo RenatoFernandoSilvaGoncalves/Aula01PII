@@ -1,5 +1,6 @@
 import { Button, Col, Form, Row } from "react-bootstrap";
 import { useState } from "react";
+import { cadastrarCliente, alterarCliente } from "../../services/servicoClientes";
 
 export default function FormularioCadCliente(props) {
     const [cliente, setCliente] = useState(props.clienteSelecionado);
@@ -18,23 +19,42 @@ export default function FormularioCadCliente(props) {
             setValidado(false);
             if (!props.modoEdicao) {
                 //adicionar um cliente na lista
-                props.listaClientes.push(cliente);
-                props.setExibirTabela(true);
+                cadastrarCliente(cliente).then((resposta) => {
+                    if (resposta.status) {
+                        props.listaClientes.push(cliente);
+                        props.setExibirTabela(true);
+                    }
+                    else
+                    {
+                        alert(resposta.mensagem);
+                    }
+                }).catch((erro) => {
+                    alert("Não foi possível se comunicar com o backend:" + erro.message);
+                });
             }
             else{
-                //atualizar o cliente na lista
-                const indice = props.listaClientes.findIndex((cli) => { return cli.cpf == cliente.cpf });
-                props.listaClientes[indice] = cliente;
-                props.setModoEdicao(false);
-                props.setClienteSelecionado({
-                    cpf: "",
-                    nomeCompleto: "",
-                    endereco: "",
-                    cidade: "",
-                    estado: "",
-                    cep: "",
+                alterarCliente(cliente).then((resposta) => {
+                    if (resposta.status){
+                        //atualizar o cliente na lista
+                        const indice = props.listaClientes.findIndex((cli) => { return cli.cpf == cliente.cpf });
+                        props.listaClientes[indice] = cliente;
+                        props.setModoEdicao(false);
+                        props.setClienteSelecionado({
+                            cpf: "",
+                            nome: "",
+                            endereco: "",
+                            cidade: "",
+                            estado: "",
+                            cep: "",
+                        });
+                        props.setExibirTabela(true);
+                    }
+                    else{
+                        alert(resposta.mensagem);
+                    }
+                }).catch((erro) => {
+                    alert("Não foi possível se comunicar com o backend:" + erro.message);
                 });
-                props.setExibirTabela(true);
             }
         }
         else {
@@ -68,10 +88,10 @@ export default function FormularioCadCliente(props) {
                         required
                         type="text"
                         placeholder="Nome Completo"
-                        id="nomeCompleto"
-                        name="nomeCompleto"
+                        id="nome"
+                        name="nome"
                         onChange={atualizarCliente}
-                        value={cliente.nomeCompleto}
+                        value={cliente.nome}
                     />
                     <Form.Control.Feedback type="invalid">Por favor, informe o nome completo!</Form.Control.Feedback>
                 </Form.Group>

@@ -1,4 +1,5 @@
 import { Button, Container, Table } from "react-bootstrap";
+import { excluirCliente } from "../../services/servicoClientes";
 export default function TabelaClientes(props) {
     
     function escolherClienteEdicao(cliente){
@@ -9,12 +10,21 @@ export default function TabelaClientes(props) {
 
     function apagarCliente(cpf) {
         if (window.confirm("Tem certeza que deseja apagar o cliente?")) {
-            //limpando a lista original
-            const listaNova = props?.listaClientes.filter((cliente) => {
-                return cliente.cpf != cpf;
+            excluirCliente(cpf).then((resposta) => {
+                if (resposta.status){
+                    //limpando a lista original
+                    const listaNova = props?.listaClientes.filter((cliente) => {
+                        return cliente.cpf != cpf;
+                    });
+                    props.setListaClientes(listaNova);
+                }
+                else
+                {
+                    alert(resposta.mensagem);
+                }
+            }).catch((erro) => {
+                alert("Não foi possível se comunicar com o backend:" + erro.message);
             });
-            props.setListaClientes(listaNova);
-
         }
 
     }
@@ -25,7 +35,7 @@ export default function TabelaClientes(props) {
                 props.setModoEdicao(false);
                 props.setClienteSelecionado({
                     cpf: '',
-                    nomeCompleto: '',
+                    nome: '',
                     endereco: '',
                     cidade: '',
                     estado: '',
@@ -51,7 +61,7 @@ export default function TabelaClientes(props) {
                         props?.listaClientes.map((cliente) => {
                             return <tr>
                                 <td>{cliente.cpf}</td>
-                                <td>{cliente.nomeCompleto}</td>
+                                <td>{cliente.nome}</td>
                                 <td>{cliente.endereco}</td>
                                 <td>{cliente.cidade}</td>
                                 <td>{cliente.estado}</td>
